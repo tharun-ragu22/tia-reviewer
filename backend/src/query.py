@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from src.datamodels import TIAReview
 from google import genai
 from google.genai import types
 import os
@@ -6,7 +7,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()  # call this before os.environ["GEMINI_API_KEY"]
 
-def get_insights(presigned_url: str):
+def get_insights(presigned_url: str) -> TIAReview:
     
 
     client = genai.Client(
@@ -70,10 +71,14 @@ def get_insights(presigned_url: str):
                 mime_type="application/pdf"
             ),
             VALIDATION_PROMPT
-        ]
+        ],
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=TIAReview,
+        )
     )
 
-    print(response.text)
+    return response.parsed
 
 if __name__ == "__main__":
     print(get_insights('gs://tia-files/tia-uploads/dixie_outlet_mall.pdf'))
