@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-@app.route('/post-endpoint', methods=['POST'])
-def post_endpoint():
+@app.route('/verify-report', methods=['POST'])
+def verify_report():
     data = request.get_json()
     return jsonify({"received": data}), 200
 
