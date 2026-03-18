@@ -1,5 +1,5 @@
-from src.constants import VALIDATION_PROMPT
-from src.datamodels import TIAReview
+from constants import VALIDATION_PROMPT
+from datamodels import TIAReview
 from google import genai
 from google.genai import types
 import os
@@ -33,7 +33,15 @@ def get_insights(presigned_url: str) -> TIAReview:
         )
     )
 
-    return response.parsed
+    parsed = response.parsed
+
+    if isinstance(parsed, TIAReview):
+        return parsed
+    elif isinstance(parsed, dict):
+        return TIAReview.model_validate(parsed)
+    else:
+        # fallback to parsing the text
+        return TIAReview.model_validate_json(response.text)
 
 if __name__ == "__main__":
     print(get_insights('gs://tia-files/tia-uploads/dixie_outlet_mall.pdf'))
