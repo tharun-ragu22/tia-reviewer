@@ -1,10 +1,15 @@
 "use client";
 import { useState } from "react";
 
-function uploadToCloud(file: File) {
-  // Placeholder function to simulate file upload to cloud storage
-  console.log(`Uploading ${file.name} to cloud storage...`);
-  return Promise.resolve(`https://cloudstorage.com/${file.name}`);
+async function uploadToCloud(file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const req = await fetch("api/upload", {
+    method: "POST",
+    body: formData,
+  });
+  console.log(await req.json());
 }
 
 interface FileUploadProps {
