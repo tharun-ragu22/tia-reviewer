@@ -18,5 +18,5 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["backend/src"]
+pythonpath = ["backend"]
 testpaths = ["backend/__tests__"]
