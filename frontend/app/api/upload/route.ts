@@ -13,9 +13,6 @@ async function uploadToCloud(file: File) {
 }
 
 export async function POST(request: NextRequest) {
-    console.log("GOOGLE_APPLICATION_CREDENTIALS:", process.env.GOOGLE_APPLICATION_CREDENTIALS)
-    console.log("GCS_BUCKET_NAME:", process.env.GCS_BUCKET_NAME)
-    console.log("GCP_PROJECT_ID:", process.env.GCP_PROJECT_ID)
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
