@@ -18,6 +18,15 @@ test("uploads file to cloud storage", async ({ page }) => {
     mimeType: "application/pdf",
     buffer: Buffer.from("dummy content"),
   });
+
+  page.on('response', async (response) => {
+  if (response.url().includes('/api/upload')) {
+    console.log('upload API status:', response.status())
+    const body = await response.text()
+    console.log('upload API response:', body)
+  }
+  });
+
   const submitButton = page.locator('button[type="submit"]');
   console.log('submit button found:', await submitButton.count())
   await submitButton.click()
