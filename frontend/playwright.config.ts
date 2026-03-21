@@ -18,6 +18,9 @@ export default defineConfig({
     command: "npm run dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
+    timeout: 120000, // 2 minutes
+    stdout: 'pipe',
+    stderr: 'pipe',
     env: {
       GCP_PROJECT_ID: process.env.GCP_PROJECT_ID ?? "",
       GCS_BUCKET_NAME: process.env.GCS_BUCKET_NAME ?? "",
