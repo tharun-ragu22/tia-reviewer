@@ -30,6 +30,10 @@ test("uploads file to cloud storage", async ({ page }) => {
   const submitButton = page.locator('button[type="submit"]');
   console.log('submit button found:', await submitButton.count())
   await submitButton.click()
+  await page.waitForResponse(
+    response => response.url().includes('/api/upload') && response.status() === 200,
+    { timeout: 15000 }
+  );
   console.log('clicked submit')
 
   // Then the file is uploaded to the cloud storage
