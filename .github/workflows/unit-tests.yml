@@ -73,5 +73,9 @@ jobs:
           python-version: '3.12'
       - uses: astral-sh/setup-uv@v5
       - run: uv sync
+      - name: Set up GCP credentials
+        run: |
+          echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' > /tmp/gcp-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-key.json" >> $GITHUB_ENV
       - name: Run backend acceptance tests
         run: uv run pytest -k "acceptance"
