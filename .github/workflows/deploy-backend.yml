@@ -21,11 +21,14 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@v2
 
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker gcr.io --quiet
+
       - name: Build and push container
         run: |
-          gcloud builds submit ./backend \
-            --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }} \
-            --suppress-logs
+          docker build -f backend/Dockerfile ./backend \
+            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
 
       - name: Deploy preview to Cloud Run
         run: |
@@ -49,10 +52,14 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@v2
 
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker gcr.io --quiet
+
       - name: Build and push container
         run: |
-          gcloud builds submit ./backend \
-            --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
+          docker build -f backend/Dockerfile ./backend \
+            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
 
       - name: Deploy to Cloud Run (prod)
         run: |
