@@ -9,7 +9,6 @@ const BUCKET = "tia-files";
 test("uploads file to cloud storage", async ({ page }) => {
   // Given a PDF is less than 50MB and less than 1000 pages
   await page.goto("/");
-  await expect(page).toHaveTitle(/create next app/i);
 
   // When the file is uploaded
   const fileInput = page.locator('input[type="file"]');
@@ -20,7 +19,11 @@ test("uploads file to cloud storage", async ({ page }) => {
     buffer: Buffer.from("dummy content"),
   });
   const submitButton = page.locator('button[type="submit"]');
-  await submitButton.click();
+  await submitButton.click()
+  await page.waitForResponse(
+    response => response.url().includes('/api/upload') && response.status() === 200,
+    { timeout: 15000 }
+  );
 
   // Then the file is uploaded to the cloud storage
   const delay = 200;

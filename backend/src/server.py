@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from query import get_insights
+from src.query import get_insights
 
 app = Flask(__name__)
 

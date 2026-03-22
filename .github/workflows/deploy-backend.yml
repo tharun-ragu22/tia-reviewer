@@ -1,0 +1,72 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy-preview:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker gcr.io --quiet
+
+      - name: Build and push container
+        run: |
+          docker build -f backend/Dockerfile ./backend \
+            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
+
+      - name: Deploy preview to Cloud Run
+        run: |
+          gcloud run deploy tia-api-preview \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }} \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --set-env-vars GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} \
+            --set-env-vars GCS_BUCKET_NAME=${{ secrets.GCS_BUCKET_NAME_STAGING }}
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker gcr.io --quiet
+
+      - name: Build and push container
+        run: |
+          docker build -f backend/Dockerfile ./backend \
+            -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }}
+
+      - name: Deploy to Cloud Run (prod)
+        run: |
+          gcloud run deploy tia-api \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/tia-api:${{ github.sha }} \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --set-env-vars GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} \
+            --set-env-vars GCS_BUCKET_NAME=${{ secrets.GCS_BUCKET_NAME }}

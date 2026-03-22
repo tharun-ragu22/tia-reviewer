@@ -1,5 +1,5 @@
-from constants import VALIDATION_PROMPT
-from datamodels import TIAReview
+from src.constants import VALIDATION_PROMPT
+from src.datamodels import TIAReview
 from google import genai
 from google.genai import types
 import os

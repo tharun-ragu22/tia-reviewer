@@ -2,6 +2,10 @@ from src.datamodels import TIAReview, Severity, Finding, MethodologyFlags
 from unittest.mock import MagicMock, patch
 from src.query import get_insights
 
+import os
+os.environ.setdefault("GCP_PROJECT_ID", "mock-project")
+os.environ.setdefault("GEMINI_API_KEY", "mock-key")
+
 
 def test_passing_tia():
     # given a url exists to a passing TIA report
