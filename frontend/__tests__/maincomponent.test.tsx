@@ -27,6 +27,9 @@ describe("Main component", () => {
 
     // Then user should see the results page
     expect(screen.getByText(/result/i)).toBeVisible();
+    expect(screen.getByText(/summary/i)).toBeVisible();
+    expect(screen.getByText(/findings/i)).toBeVisible();
+    expect(screen.getByText(/methodology flags/i)).toBeVisible();
   });
 
   it("navigates back to homepage on 'Upload another file'", async () => {
