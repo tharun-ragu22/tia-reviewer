@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Views } from "./DataModels";
 
 async function uploadToCloud(file: File) {
   const formData = new FormData();
@@ -14,9 +15,10 @@ async function uploadToCloud(file: File) {
 
 interface FileUploadProps {
   onFileUpload?: (file: File) => void;
+  setView: (view: Views) => void;
 }
 
-export default function FileUpload({ onFileUpload }: FileUploadProps) {
+export default function FileUpload({ onFileUpload, setView }: FileUploadProps) {
   const [file, setFile] = useState<File | null>(null);
   onFileUpload = onFileUpload ?? uploadToCloud;
   return (
@@ -26,6 +28,7 @@ export default function FileUpload({ onFileUpload }: FileUploadProps) {
         if (file) {
           onFileUpload(file);
         }
+        setView(Views.Results)
       }}
     >
       <label htmlFor="file-upload" className="sr-only">
