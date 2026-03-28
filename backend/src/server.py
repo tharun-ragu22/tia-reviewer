@@ -10,7 +10,12 @@ def verify_report():
     if FILE_URL_PARAM not in data:
         return jsonify({"error": "no file url passed in"}), 400
     res = get_insights(data[FILE_URL_PARAM])
-    return jsonify({"received": res.model_dump()}), 200
+    return jsonify(res.model_dump()), 200
+
+@app.route('/', methods=['GET'])
+def health_check():
+    
+    return jsonify({"healthy": True}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

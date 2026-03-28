@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import FileUpload from "../app/components/FileUpload";
 
 import "@testing-library/jest-dom";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 describe("FileUpload component", () => {
   it("receives an uploaded file", async () => {
@@ -11,7 +11,7 @@ describe("FileUpload component", () => {
       type: "application/pdf",
     });
     const mockFileUpload = jest.fn();
-    render(<FileUpload onFileUpload={mockFileUpload} />);
+    render(<FileUpload onFileUpload={mockFileUpload} setView={() => {}} />);
     // When the file is uploaded
     const fileInput = screen.getByLabelText(/choose file/i);
     await userEvent.upload(fileInput, validPDF);
