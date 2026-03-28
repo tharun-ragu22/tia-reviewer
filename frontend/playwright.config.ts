@@ -28,6 +28,8 @@ export default defineConfig({
         GCS_BUCKET_NAME: process.env.GCS_BUCKET_NAME ?? "",
         GOOGLE_APPLICATION_CREDENTIALS:
           process.env.GOOGLE_APPLICATION_CREDENTIALS ?? "",
+        NEXT_PUBLIC_BACKEND_URL: 
+          process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000",
       },
     },
     {
