@@ -5,7 +5,7 @@ import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MainComponent from "../app/components/MainComponent";
 
-global.fetch = jest.fn()
+global.fetch = jest.fn();
 
 describe("Main component", () => {
   it("navigates to results page on submit", async () => {
@@ -13,11 +13,14 @@ describe("Main component", () => {
     const validPDF = new File(["dummy content"], "test.pdf", {
       type: "application/pdf",
     });
-    (global.fetch as jest.Mock)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ gcsUri: "gs://tia-files/tia-uploads/test.pdf" }),
-      });
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        overall_rating: "pass",
+        summary: "",
+        findings: [],
+      }),
+    });
     render(<MainComponent />);
     // When the file is uploaded
     const fileInput = screen.getByLabelText(/choose file/i);
@@ -26,7 +29,7 @@ describe("Main component", () => {
     await userEvent.click(submitButton);
 
     // Then user should see the results page
-    expect(screen.getByText(/result/i)).toBeVisible();
+    expect(screen.getByText(/results/i)).toBeVisible();
     expect(screen.getByText(/summary/i)).toBeVisible();
     expect(screen.getByText(/findings/i)).toBeVisible();
     expect(screen.getByText(/methodology flags/i)).toBeVisible();
@@ -37,11 +40,14 @@ describe("Main component", () => {
     const validPDF = new File(["dummy content"], "test.pdf", {
       type: "application/pdf",
     });
-    (global.fetch as jest.Mock)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ gcsUri: "gs://tia-files/tia-uploads/test.pdf" }),
-      });
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        overall_rating: "pass",
+        summary: "",
+        findings: [],
+      }),
+    });
     render(<MainComponent />);
     const fileInput = screen.getByLabelText(/choose file/i);
     await userEvent.upload(fileInput, validPDF);
@@ -49,7 +55,7 @@ describe("Main component", () => {
     await userEvent.click(submitButton);
     // And the user clicks Back to Home
     const backToHomeLink = screen.getByText(/upload another/i);
-    await userEvent.click(backToHomeLink)
+    await userEvent.click(backToHomeLink);
 
     // Then user should see the results page
     expect(screen.getByText(/file/i)).toBeVisible();
