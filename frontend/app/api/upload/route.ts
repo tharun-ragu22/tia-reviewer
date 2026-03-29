@@ -4,14 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 
 const storage = new Storage();
-const bucketName = "tia-files";
 
 async function uploadToCloud(file: File) {
   const fileName = file.name;
 
   const objectPath = `tia-uploads/${randomUUID()}-${fileName}`;
   const bucketName = process.env.GCS_BUCKET_NAME!;
-  console.log('bucketname:', bucketName)
 
   const [signedUrl] = await storage
     .bucket(bucketName)
