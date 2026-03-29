@@ -30,8 +30,14 @@ test("displays review results after upload", async ({ page }) => {
   const submitButton = page.locator('button[type="submit"]');
   await submitButton.click();
   await page.waitForResponse(
-    (response) =>
-      response.url().includes("/api/upload") && response.status() === 200,
+    (response) => {
+      if (response.url().includes("/api/upload") && response.status() >= 400){
+        throw new Error('received error response from upload url')
+      }
+      return (
+        response.url().includes("/api/upload") && response.status() === 200
+      );
+    },
     { timeout: 180000 },
   );
 
@@ -45,7 +51,7 @@ test("displays review results after upload", async ({ page }) => {
   await expect(summary).toBeVisible();
 
   const summaryText = await summary.innerText();
-  console.log('summary text', summaryText)
+  console.log("summary text", summaryText);
   expect(summaryText.trim().split(/\s+/).length).toBeGreaterThan(10);
 
   // And there should be at least 1 findings section
