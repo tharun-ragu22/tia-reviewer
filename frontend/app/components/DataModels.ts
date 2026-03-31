@@ -1,6 +1,7 @@
 export enum Views {
   Homepage,
   Results,
+  Loading
 }
 
 export enum Severity {

@@ -59,6 +59,7 @@ export default function FileUpload({
   return (
     <form
       onSubmit={async (e) => {
+        setView(Views.Loading)
         e.preventDefault();
         if (file) {
           await onFileUpload(file);
