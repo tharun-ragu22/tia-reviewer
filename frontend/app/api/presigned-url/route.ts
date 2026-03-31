@@ -1,9 +1,13 @@
 import { Storage } from "@google-cloud/storage";
 import { NextRequest, NextResponse } from "next/server";
+import fs from "fs";
 
 import { randomUUID } from "crypto";
 
-const storage = new Storage();
+const storage = new Storage({
+  credentials: JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS!, 'utf-8')),
+  projectId: process.env.GCP_PROJECT_ID,
+});
 
 async function getPresignedUrl(fileName: string) {
   const objectPath = `tia-uploads/${randomUUID()}-${fileName}`;

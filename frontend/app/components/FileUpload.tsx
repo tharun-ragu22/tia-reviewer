@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Finding, Views } from "./DataModels";
 
+
 interface FileUploadProps {
   onFileUpload?: (file: File) => void;
   setView: (view: Views) => void;

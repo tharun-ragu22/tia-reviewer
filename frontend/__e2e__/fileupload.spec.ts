@@ -30,11 +30,8 @@ test("displays review results after upload", async ({ page }) => {
   await submitButton.click();
   await page.waitForResponse(
     (response) => {
-      if (
-        response.url().includes("api/verification") &&
-        response.status() >= 400
-      ) {
-        throw new Error("received error response from upload url");
+      if (response.url().includes("api/") && response.status() >= 400) {
+        throw new Error("couldn't upload file");
       }
       return (
         response.url().includes("api/verification") && response.status() === 200
