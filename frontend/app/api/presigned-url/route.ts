@@ -5,7 +5,7 @@ import fs from "fs";
 import { randomUUID } from "crypto";
 
 const storage = new Storage({
-  credentials: JSON.parse(fs.readFileSync(process.env.GOOGLE_APPLICATION_CREDENTIALS!, 'utf-8')),
+  credentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON!),
   projectId: process.env.GCP_PROJECT_ID,
 });
 
