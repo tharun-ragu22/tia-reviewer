@@ -8,8 +8,8 @@ import MainComponent from "../app/components/MainComponent";
 global.fetch = jest.fn();
 
 describe("Main component", () => {
-  beforeAll(() => {
-    global.fetch = jest.fn((url: string) => {
+  beforeEach(() => {
+    global.fetch = jest.fn(async (url: string) => {
       if (url.includes("api/presigned-url")) {
         console.log("getting fake presigned url");
         return Promise.resolve({
@@ -54,6 +54,50 @@ describe("Main component", () => {
     expect(screen.getByText(/summary/i)).toBeVisible();
     expect(screen.getByText(/findings/i)).toBeVisible();
     expect(screen.getByText(/methodology flags/i)).toBeVisible();
+  });
+
+  it("displays loading screen after submit", async () => {
+    // Given a PDF is less than 50MB and less than 1000 pages
+    let resolveMock: (value: any) => void = ()=> {};
+    const originalMock = global.fetch;
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes("api/presigned-url")) {
+        return new Promise((resolve)=> {
+          resolveMock = resolve;
+        });
+      }
+      return originalMock(url);
+    }) as jest.Mock;
+    const validPDF = new File(["dummy content"], "test.pdf", {
+      type: "application/pdf",
+    });
+    render(<MainComponent />);
+    // When the file is uploaded
+    const fileInput = screen.getByLabelText(/choose file/i);
+    await userEvent.upload(fileInput, validPDF);
+    const submitButton = screen.getByRole("button", { name: /submit/i });
+    await userEvent.click(submitButton);
+
+    // Then user should see the loading page first
+    expect(screen.getByText(/loading/i)).toBeVisible();
+    // And user should see results page after loading
+    await act(async () => {
+      resolveMock({
+          ok: true,
+          json: async () => ({
+            presigned_url: "/fake-url",
+            file_uri: "",
+          })
+        })
+    })
+    resolveMock({
+          ok: true,
+          json: async () => ({
+            presigned_url: "/fake-url",
+            file_uri: "",
+          })
+        })
+    expect(screen.getByText(/results/i)).toBeVisible();
   });
 
   it("navigates back to homepage on 'Upload another file'", async () => {
