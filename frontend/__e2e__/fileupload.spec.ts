@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { randomUUID } from "crypto";
 import { Storage } from "@google-cloud/storage";
 import { readFileSync } from "fs";
 import path from "path";
@@ -21,7 +20,7 @@ test("displays review results after upload", async ({ page }) => {
 
   // When the file is uploaded
   const fileInput = page.locator('input[type="file"]');
-  randomFileName = `${randomUUID()}_test.pdf`;
+  randomFileName = `test.pdf`;
   await fileInput.setInputFiles({
     name: randomFileName,
     mimeType: "application/pdf",
@@ -31,11 +30,14 @@ test("displays review results after upload", async ({ page }) => {
   await submitButton.click();
   await page.waitForResponse(
     (response) => {
-      if (response.url().includes("/api/upload") && response.status() >= 400){
-        throw new Error('received error response from upload url')
+      if (
+        response.url().includes("api/verification") &&
+        response.status() >= 400
+      ) {
+        throw new Error("received error response from upload url");
       }
       return (
-        response.url().includes("/api/upload") && response.status() === 200
+        response.url().includes("api/verification") && response.status() === 200
       );
     },
     { timeout: 180000 },
@@ -66,7 +68,7 @@ test("displays review results after upload", async ({ page }) => {
   });
 });
 
-test.afterEach(async () => {
-  console.log("deleting", randomFileName);
-  await deleteFile(randomFileName).catch(console.error);
-});
+// test.afterEach(async () => {
+//   console.log("deleting", randomFileName);
+//   await deleteFile(randomFileName).catch(console.error);
+// });
