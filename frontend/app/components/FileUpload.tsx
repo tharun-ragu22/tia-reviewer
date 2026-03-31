@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Finding, Views } from "./DataModels";
 
+
 interface FileUploadProps {
   onFileUpload?: (file: File) => void;
   setView: (view: Views) => void;
@@ -21,16 +22,38 @@ export default function FileUpload({
 
   async function uploadToCloud(file: File) {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file_name", file.name);
 
-    const req = await fetch("api/upload", {
+    const req = await fetch("api/presigned-url", {
       method: "POST",
       body: formData,
     });
     const data = await req.json();
-    setOverallResult(data.overall_rating);
-    setSummaryText(data.summary);
-    setFindings(data.findings);
+    const presignedUrl = data.presigned_url;
+    const fileUri = data.file_uri;
+
+    await fetch(presignedUrl, {
+      method: "PUT",
+      headers: { "Content-Type": "application/pdf" },
+      body: file,
+    });
+
+    
+    
+
+    const backendFormData = new FormData();
+    backendFormData.append("file_uri", fileUri);
+
+    const resultReq = await fetch("api/verification", {
+      method: "POST",
+      body: backendFormData,
+    });
+
+    const results = await resultReq.json();
+
+    setOverallResult(results.overall_rating);
+    setSummaryText(results.summary);
+    setFindings(results.findings);
   }
   onFileUpload = onFileUpload ?? uploadToCloud;
   return (
@@ -39,6 +62,8 @@ export default function FileUpload({
         e.preventDefault();
         if (file) {
           await onFileUpload(file);
+        } else {
+          alert("Please select a file!");
         }
         setView(Views.Results);
       }}

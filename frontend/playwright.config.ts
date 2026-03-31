@@ -3,6 +3,11 @@ import os from "os";
 import path from "path";
 import fs from "fs";
 
+import dotenv from "dotenv";
+
+// load .env.local before anything else
+dotenv.config({ path: path.join(__dirname, ".env.local") });
+
 if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
   const tmpPath = path.join(os.tmpdir(), "gcp-key.json");
   fs.writeFileSync(tmpPath, process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
@@ -28,7 +33,7 @@ export default defineConfig({
         GCS_BUCKET_NAME: process.env.GCS_BUCKET_NAME ?? "",
         GOOGLE_APPLICATION_CREDENTIALS:
           process.env.GOOGLE_APPLICATION_CREDENTIALS ?? "",
-        NEXT_PUBLIC_BACKEND_URL: 
+        NEXT_PUBLIC_BACKEND_URL:
           process.env.NEXT_PUBLIC_BACKEND_URL ?? "http://localhost:8000",
       },
     },

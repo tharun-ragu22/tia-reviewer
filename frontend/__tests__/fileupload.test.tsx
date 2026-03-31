@@ -11,7 +11,15 @@ describe("FileUpload component", () => {
       type: "application/pdf",
     });
     const mockFileUpload = jest.fn();
-    render(<FileUpload onFileUpload={mockFileUpload} setView={() => {}} />);
+    render(
+      <FileUpload
+        onFileUpload={mockFileUpload}
+        setView={() => {}}
+        setOverallResult={() => {}}
+        setFindings={() => {}}
+        setSummaryText={() => {}}
+      />,
+    );
     // When the file is uploaded
     const fileInput = screen.getByLabelText(/choose file/i);
     await userEvent.upload(fileInput, validPDF);

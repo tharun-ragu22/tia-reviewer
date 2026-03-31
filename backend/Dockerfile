@@ -11,4 +11,4 @@ COPY src/ ./src/
 
 EXPOSE 8080
 
-CMD ["uv", "run", "gunicorn", "src.server:app", "--bind", "0.0.0.0:8080", "--workers", "2"]
+CMD ["uv", "run", "gunicorn", "src.server:app", "--bind", "0.0.0.0:8080", "--workers", "2","--timeout", "300"]

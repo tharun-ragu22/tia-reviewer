@@ -8,18 +8,39 @@ import MainComponent from "../app/components/MainComponent";
 global.fetch = jest.fn();
 
 describe("Main component", () => {
+  beforeAll(() => {
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes("api/presigned-url")) {
+        console.log("getting fake presigned url");
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            presigned_url: "/fake-url",
+            file_uri: "",
+          }),
+        });
+      }
+      if (url.includes("fake-url")) {
+        return Promise.resolve({
+          ok: true,
+        });
+      }
+      if (url.includes("api/verification")) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            overall_rating: "",
+            summary: "",
+            findings: [],
+          }),
+        });
+      }
+    }) as jest.Mock;
+  });
   it("navigates to results page on submit", async () => {
     // Given a PDF is less than 50MB and less than 1000 pages
     const validPDF = new File(["dummy content"], "test.pdf", {
       type: "application/pdf",
-    });
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        overall_rating: "pass",
-        summary: "",
-        findings: [],
-      }),
     });
     render(<MainComponent />);
     // When the file is uploaded
@@ -39,14 +60,6 @@ describe("Main component", () => {
     // Given the file is successfully uploaded and submitted
     const validPDF = new File(["dummy content"], "test.pdf", {
       type: "application/pdf",
-    });
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        overall_rating: "pass",
-        summary: "",
-        findings: [],
-      }),
     });
     render(<MainComponent />);
     const fileInput = screen.getByLabelText(/choose file/i);

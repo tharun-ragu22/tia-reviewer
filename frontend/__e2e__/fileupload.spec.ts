@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { randomUUID } from "crypto";
 import { Storage } from "@google-cloud/storage";
 import { readFileSync } from "fs";
 import path from "path";
@@ -21,7 +20,7 @@ test("displays review results after upload", async ({ page }) => {
 
   // When the file is uploaded
   const fileInput = page.locator('input[type="file"]');
-  randomFileName = `${randomUUID()}_test.pdf`;
+  randomFileName = `test.pdf`;
   await fileInput.setInputFiles({
     name: randomFileName,
     mimeType: "application/pdf",
@@ -30,8 +29,14 @@ test("displays review results after upload", async ({ page }) => {
   const submitButton = page.locator('button[type="submit"]');
   await submitButton.click();
   await page.waitForResponse(
-    (response) =>
-      response.url().includes("/api/upload") && response.status() === 200,
+    (response) => {
+      if (response.url().includes("api/") && response.status() >= 400) {
+        throw new Error("couldn't upload file");
+      }
+      return (
+        response.url().includes("api/verification") && response.status() === 200
+      );
+    },
     { timeout: 180000 },
   );
 
@@ -45,7 +50,7 @@ test("displays review results after upload", async ({ page }) => {
   await expect(summary).toBeVisible();
 
   const summaryText = await summary.innerText();
-  console.log('summary text', summaryText)
+  console.log("summary text", summaryText);
   expect(summaryText.trim().split(/\s+/).length).toBeGreaterThan(10);
 
   // And there should be at least 1 findings section
@@ -60,7 +65,7 @@ test("displays review results after upload", async ({ page }) => {
   });
 });
 
-test.afterEach(async () => {
-  console.log("deleting", randomFileName);
-  await deleteFile(randomFileName).catch(console.error);
-});
+// test.afterEach(async () => {
+//   console.log("deleting", randomFileName);
+//   await deleteFile(randomFileName).catch(console.error);
+// });
