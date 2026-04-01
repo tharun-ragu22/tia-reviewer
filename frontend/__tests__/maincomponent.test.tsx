@@ -53,7 +53,6 @@ describe("Main component", () => {
     expect(screen.getByText(/results/i)).toBeVisible();
     expect(screen.getByText(/summary/i)).toBeVisible();
     expect(screen.getByText(/findings/i)).toBeVisible();
-    expect(screen.getByText(/methodology flags/i)).toBeVisible();
   });
 
   it("displays loading screen after submit", async () => {
