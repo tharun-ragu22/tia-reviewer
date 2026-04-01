@@ -23,7 +23,7 @@ describe("FileUpload component", () => {
     // When the file is uploaded
     const fileInput = screen.getByLabelText(/choose file/i);
     await userEvent.upload(fileInput, validPDF);
-    const submitButton = screen.getByRole("button", { name: /submit/i });
+    const submitButton = screen.getByRole("button", { name: /verify document/i });
     await userEvent.click(submitButton);
 
     // Then the file is uploaded to the cloud storage

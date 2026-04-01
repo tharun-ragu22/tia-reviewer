@@ -11,25 +11,28 @@ export default function MainComponent() {
   const [overallResult, setOverallResult] = useState("");
   const [summaryText, setSummaryText] = useState("");
   const [findings, setFindings] = useState<Finding[]>([]);
-  if (view === Views.Homepage) {
-    return (
-      <FileUpload
-        setView={setView}
-        setOverallResult={setOverallResult}
-        setSummaryText={setSummaryText}
-        setFindings={setFindings}
-      />
-    );
-  } else if (view === Views.Loading) {
-    return <LoadingPage />;
-  } else {
-    return (
-      <ResultsPage
-        setView={setView}
-        overallResult={overallResult}
-        summaryText={summaryText}
-        findings={findings}
-      />
-    );
-  }
+
+  return (
+    <main className="w-full">
+      <title>TIA Reviewer</title>
+      <h1>TIA Reviewer</h1>
+      {view === Views.Homepage ? (
+        <FileUpload
+          setView={setView}
+          setOverallResult={setOverallResult}
+          setSummaryText={setSummaryText}
+          setFindings={setFindings}
+        />
+      ) : view === Views.Loading ? (
+        <LoadingPage />
+      ) : (
+        <ResultsPage
+          setView={setView}
+          overallResult={overallResult}
+          summaryText={summaryText}
+          findings={findings}
+        />
+      )}
+    </main>
+  );
 }
