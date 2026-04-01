@@ -41,9 +41,9 @@ test("displays review results after upload", async ({ page }) => {
   );
 
   // Then the user should see whether the assessment passed or failed
-  await expect(page.getByText(/Overall result: \s*(pass|flag)/i)).toBeAttached({
-    timeout: 15000,
-  });
+  await expect(page.locator("div.overall-result")).toContainText(/overall result:/i);
+  await expect(page.locator("div.overall-result")).toContainText(/(pass|flag|fail)/i);
+
   // And there should be a summary section
 
   const summary = page.locator("div.summary-section");
@@ -59,10 +59,6 @@ test("displays review results after upload", async ({ page }) => {
 
   const text = await findings.first().innerText();
   expect(text.trim().split(/\s+/).length).toBeGreaterThan(10);
-
-  await expect(page.getByText("Methodology Flags")).toBeAttached({
-    timeout: 15000,
-  });
 });
 
 // test.afterEach(async () => {

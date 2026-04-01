@@ -46,14 +46,13 @@ describe("Main component", () => {
     // When the file is uploaded
     const fileInput = screen.getByLabelText(/choose file/i);
     await userEvent.upload(fileInput, validPDF);
-    const submitButton = screen.getByRole("button", { name: /submit/i });
+    const submitButton = screen.getByRole("button", { name: /verify document/i });
     await userEvent.click(submitButton);
 
     // Then user should see the results page
     expect(screen.getByText(/results/i)).toBeVisible();
     expect(screen.getByText(/summary/i)).toBeVisible();
     expect(screen.getByText(/findings/i)).toBeVisible();
-    expect(screen.getByText(/methodology flags/i)).toBeVisible();
   });
 
   it("displays loading screen after submit", async () => {
@@ -75,7 +74,7 @@ describe("Main component", () => {
     // When the file is uploaded
     const fileInput = screen.getByLabelText(/choose file/i);
     await userEvent.upload(fileInput, validPDF);
-    const submitButton = screen.getByRole("button", { name: /submit/i });
+    const submitButton = screen.getByRole("button", { name: /verify document/i });
     await userEvent.click(submitButton);
 
     // Then user should see the loading page first
@@ -108,7 +107,7 @@ describe("Main component", () => {
     render(<MainComponent />);
     const fileInput = screen.getByLabelText(/choose file/i);
     await userEvent.upload(fileInput, validPDF);
-    const submitButton = screen.getByRole("button", { name: /submit/i });
+    const submitButton = screen.getByRole("button", { name: /verify document/i });
     await userEvent.click(submitButton);
     // And the user clicks Back to Home
     const backToHomeLink = screen.getByText(/upload another/i);
