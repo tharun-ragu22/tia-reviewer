@@ -39,7 +39,7 @@ export default function ResultsPage({
     <div className="max-w-3xl mx-auto px-4">
       <h1 className="text-3xl font-extrabold text-center mb-6">Results</h1>
 
-      <div className="flex items-center justify-center gap-4 mb-6">
+      <div className="flex items-center justify-center gap-4 mb-6 overall-result">
         <div className="text-xl font-semibold">Overall Result:</div>
         <div
           className={`px-3 py-1 rounded-full font-medium ${severityColor(overallResult)}`}
@@ -48,7 +48,7 @@ export default function ResultsPage({
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 summary-section">
         <h2 className="text-lg font-semibold mb-2">Summary</h2>
         <div className="prose max-w-none text-gray-700">{summaryText}</div>
       </div>
@@ -57,7 +57,7 @@ export default function ResultsPage({
         <h2 className="text-lg font-semibold mb-4">Findings</h2>
         <div className="space-y-4">
           {findings.map((finding, idx) => (
-            <div key={idx} className="border rounded-lg p-4 shadow-sm">
+            <div key={idx} className="border rounded-lg p-4 shadow-sm finding">
               <div className="flex items-center justify-between mb-3">
                 <div className="font-semibold text-gray-900">
                   {finding.section}
