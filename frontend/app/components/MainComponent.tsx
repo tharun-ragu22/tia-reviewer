@@ -15,7 +15,7 @@ export default function MainComponent() {
   return (
     <main className="w-full">
       <title>TIA Reviewer</title>
-      <h1>TIA Reviewer</h1>
+      <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-6">TIA Reviewer</h1>
       {view === Views.Homepage ? (
         <FileUpload
           setView={setView}
